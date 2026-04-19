@@ -105,8 +105,8 @@ Route::prefix('/')->name('user.')->group(function () {
         Route::get('/', [CartController::class, 'index'])->name('cart');
         Route::post('/add/{id}', [CartController::class, 'add'])->name('cart.add');
         Route::patch('/update/{id}', [CartController::class, 'update'])->name('cart.update'); // Changed from patch to post
-        Route::post('/remove/{id}', [CartController::class, 'remove'])->name('cart.remove'); // Changed from delete to post
-        Route::post('/clear', [CartController::class, 'clear'])->name('cart.clear'); // Changed from delete to post
+        Route::delete('/remove/{id}', [CartController::class, 'remove'])->name('cart.remove'); // Changed from delete to post
+        Route::delete('/clear', [CartController::class, 'clear'])->name('cart.clear'); // Changed from delete to post
     });
 });
 
