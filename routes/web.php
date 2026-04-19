@@ -10,6 +10,8 @@ use App\Http\Controllers\User\CartController;
 use App\Http\Controllers\User\CheckoutController;
 use App\Http\Controllers\User\OrderController as UserOrderController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\User\PaymentController;
+use Illuminate\Support\Facades\Log;
 
 // ============= USER FRONTEND ROUTES =============
 Route::prefix('/')->name('user.')->group(function () {
@@ -22,26 +24,19 @@ Route::prefix('/')->name('user.')->group(function () {
     
     // User authentication required routes
     Route::middleware(['auth'])->group(function () {
-        // Dashboard route for authenticated users (will redirect based on role)
-        // Route::get('/dashboard', function () {
-        //     if (auth()->user()->role === 'admin') {
-        //         return redirect()->route('admin.dashboard');
-        //     }
-        //     return redirect()->route('user.dashboard');
-        // })->name('dashboard');
+       
         
-        // Route::get('/user-dashboard', [HomeController::class, 'userDashboard'])->name('user.dashboard');
         
-           Route::get('/user-dashboard', [HomeController::class, 'userDashboard'])->name('dashboard');
+        Route::get('/user-dashboard', [HomeController::class, 'userDashboard'])->name('dashboard');
 
         // Cart routes
-       // Route::prefix('cart')->group(function () {
-          //  Route::get('/', [CartController::class, 'index'])->name('cart');
-           // Route::post('/add/{id}', [CartController::class, 'add'])->name('cart.add');
-           // Route::patch('/update/{id}', [CartController::class, 'update'])->name('cart.update');
-         //   Route::delete('/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
-         //   Route::delete('/clear', [CartController::class, 'clear'])->name('cart.clear');
-     //   });
+    //    Route::prefix('cart')->group(function () {
+    //        Route::get('/', [CartController::class, 'index'])->name('cart');
+    //        Route::post('/add/{id}', [CartController::class, 'add'])->name('cart.add');
+    //        Route::patch('/update/{id}', [CartController::class, 'update'])->name('cart.update');
+    //        Route::delete('/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
+    //        Route::delete('/clear', [CartController::class, 'clear'])->name('cart.clear');
+    //    });
         
         // Checkout routes
         Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
@@ -51,6 +46,14 @@ Route::prefix('/')->name('user.')->group(function () {
         Route::get('/my-orders', [UserOrderController::class, 'index'])->name('orders');
         Route::get('/order/{id}', [UserOrderController::class, 'show'])->name('order.show');
         Route::post('/order/{id}/cancel', [UserOrderController::class, 'cancel'])->name('order.cancel');
+
+    
+        // Payment Routes - YEH ADD KAREIN
+        Route::get('/payment/{order_id}', [PaymentController::class, 'index'])->name('payment.index');
+        Route::post('/payment/success', [PaymentController::class, 'success'])->name('payment.success');
+        Route::get('/payment/failed', [PaymentController::class, 'failed'])->name('payment.failed');
+        
+
     });
 });
 
@@ -89,13 +92,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 // Get food variants (AJAX)
 Route::get('/get-food-variants/{id}', function($id) {
     $food = App\Models\Food::findOrFail($id);
-
-    //  echo "<pre>";
-    //  print_r($food->variants);
-    //  echo "</pre>";
-    //  die;
-
-
     return response()->json([
         'id' => $food->id,
         'name' => $food->name,
@@ -108,7 +104,7 @@ Route::prefix('/')->name('user.')->group(function () {
     Route::prefix('cart')->group(function () {
         Route::get('/', [CartController::class, 'index'])->name('cart');
         Route::post('/add/{id}', [CartController::class, 'add'])->name('cart.add');
-        Route::post('/update/{id}', [CartController::class, 'update'])->name('cart.update'); // Changed from patch to post
+        Route::patch('/update/{id}', [CartController::class, 'update'])->name('cart.update'); // Changed from patch to post
         Route::post('/remove/{id}', [CartController::class, 'remove'])->name('cart.remove'); // Changed from delete to post
         Route::post('/clear', [CartController::class, 'clear'])->name('cart.clear'); // Changed from delete to post
     });

@@ -8,11 +8,17 @@ use App\Models\Category;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class HomeController extends Controller
 {
     public function index()
     {
+
+    //    echo Hash::make('123456');
+    //    die;
+
+
         $featuredFoods = Food::with('category')->where('is_available', true)->latest()->take(8)->get();
         $categories = Category::withCount('foods')->get();
         $popularFoods = Food::with('category')->where('is_available', true)->inRandomOrder()->take(6)->get();

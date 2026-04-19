@@ -23,6 +23,7 @@ class CartController extends Controller
     
     public function add($id, Request $request)
     {
+
         $food = Food::findOrFail($id);
         $cart = Session::get('cart', []);
         
@@ -85,7 +86,7 @@ class CartController extends Controller
         if (isset($cart[$key])) {
             $cart[$key]['quantity'] = $request->quantity;
             Session::put('cart', $cart);
-            return redirect()->route('user.cart')->with('success', 'Cart updated successfully!');
+            return redirect()->route('user.cart')->with('success', '');
         }
         
         return redirect()->route('user.cart')->with('error', 'Item not found!');

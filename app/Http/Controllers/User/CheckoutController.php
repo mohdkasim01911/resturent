@@ -42,18 +42,25 @@ class CheckoutController extends Controller
             return redirect()->route('user.cart')->with('error', 'Your cart is empty!');
         }
         
-        $total = 0;
+        // Calculate total
+        $subtotal = 0;
         foreach ($cart as $item) {
-            $total += $item['price'] * $item['quantity'];
+            $subtotal += $item['price'] * $item['quantity'];
         }
+        
+        $deliveryFee = 50;
+        $gst = $subtotal * 0.05;
+        $totalAmount = $subtotal + $deliveryFee + $gst;
         
         // Create order
         $order = Order::create([
             'user_id' => Auth::id(),
-            'total_amount' => $total,
+            'total_amount' => $totalAmount,
             'status' => 'pending',
+            'payment_status' => 'pending',
+            'payment_method' => 'razorpay',
             'shipping_address' => $request->address,
-            'phone' => $request->phone,
+            'phone' => $request->phone
         ]);
         
         // Create order items
@@ -63,21 +70,14 @@ class CheckoutController extends Controller
                 'food_id' => $item['id'],
                 'quantity' => $item['quantity'],
                 'price' => $item['price'],
+                'portion_name' => $item['variant_name'] ?? null
             ]);
         }
         
-        // Clear cart
-        Session::forget('cart');
+        // Store order ID in session
+        Session::put('current_order_id', $order->id);
         
-        return redirect()->route('user.order.show', $order->id)->with('success', 'Order placed successfully!');
-    }
-    
-    public function orders()
-    {
-        $orders = Order::where('user_id', Auth::id())
-            ->latest()
-            ->paginate(10);
-        
-        return view('user.orders', compact('orders'));
+        // Redirect to payment
+        return redirect()->route('user.payment.index', ['order_id' => $order->id]);
     }
 }

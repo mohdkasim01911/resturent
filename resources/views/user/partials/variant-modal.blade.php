@@ -107,7 +107,7 @@
         // Create form
         const form = document.createElement('form');
         form.method = 'POST';
-        form.action = `/cart/add/${currentFoodId}`;
+        form.action = `{{url('/cart/add/${currentFoodId}')}}`;
         
         // Add CSRF token
         const csrfInput = document.createElement('input');

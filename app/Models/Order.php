@@ -9,14 +9,15 @@ class Order extends Model
 {
     use HasFactory;
     
-    protected $fillable = [
+   protected $fillable = [
         'user_id',
         'total_amount',
         'status',
-        'shipping_address',
-        'phone',
+        'payment_status',
         'payment_method',
-        'payment_status'
+        'transaction_id',
+        'shipping_address',
+        'phone'
     ];
     
     protected $casts = [
@@ -34,4 +35,14 @@ class Order extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
+
+    public function payment()
+    {
+        return $this->hasOne(Payment::class);
+    }
+
+    public function isPaid()
+    {
+        return $this->payment_status === 'success';
+    }   
 }

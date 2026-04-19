@@ -64,6 +64,7 @@
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Customer</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Amount</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Payment Status</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
                 </tr>
@@ -99,6 +100,14 @@
                                 <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
                             </select>
                         </form>
+                    </td>
+                     <td class="px-6 py-4">
+                         <span class="text-xs font-semibold px-2 py-1 rounded-full 
+                             @if($order->payment_status == 'paid') bg-green-100 text-green-800
+                             @elseif($order->payment_status == 'pending') bg-yellow-100 text-yellow-800
+                             @else bg-red-100 text-red-800 @endif">
+                             {{ ucfirst($order->payment_status) }}
+                         </span>
                     </td>
                     <td class="px-6 py-4 text-sm text-gray-500">
                         {{ $order->created_at->format('d M Y, h:i A') }}

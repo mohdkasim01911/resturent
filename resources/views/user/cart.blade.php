@@ -58,7 +58,7 @@
                                             @method('PATCH')
                                             <input type="number" name="quantity" value="{{ $item['quantity'] }}" min="1" max="99" 
                                                    class="w-16 px-2 py-1 border border-gray-300 rounded-md text-center focus:outline-none focus:ring-2 focus:ring-orange-500">
-                                            <button type="submit" class="text-blue-600 hover:text-blue-800 text-sm">Update</button>
+                                            <!-- <button type="submit" class="text-blue-600 hover:text-blue-800 text-sm">Update</button> -->
                                         </form>
                                     </td>
                                     <td class="px-6 py-4 font-semibold">₹{{ number_format($item['price'] * $item['quantity'], 2) }}</td>
@@ -130,7 +130,7 @@
                                                    class="w-12 text-center py-1 text-sm focus:outline-none quantity-input">
                                             <button type="button" onclick="incrementQuantity(this)" class="w-8 h-8 flex items-center justify-center text-gray-600 hover:bg-gray-100 rounded-r-lg">+</button>
                                         </div>
-                                        <button type="submit" class="text-blue-600 text-sm">Update</button>
+                                        <!-- <button type="submit" class="text-blue-600 text-sm">Update</button> -->
                                     </form>
                                 </div>
                                 <div>
