@@ -12,6 +12,13 @@ use Illuminate\Support\Facades\Hash;
 
 class HomeController extends Controller
 {
+   
+
+      private $centerLat = 27.1766701;  // Delhi
+    private $centerLng = 78.0080745;
+    private $maxRadius = 5; // 5 km
+
+
     public function index()
     {
 
@@ -110,5 +117,43 @@ class HomeController extends Controller
             ->sum('total_amount');
         
         return view('user.dashboard', compact('user', 'recentOrders', 'totalOrders', 'totalSpent'));
+    }
+
+    public function saveLocation(Request $request)
+    {
+        $request->validate([
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+        ]);
+
+         $userLat = $request->latitude;
+        $userLng = $request->longitude;
+        
+        $distance = $this->calculateDistance($this->centerLat, $this->centerLng, $userLat, $userLng);
+
+            if ($distance > $this->maxRadius) {
+                return response()->json(['message' => 'Sorry, we do not deliver to your location.','distance' => round($distance, 2)], 400);
+            }
+
+        return response()->json(['message' => 'Location saved successfully']);
+    }
+
+    // Calculate distance function
+    private function calculateDistance($lat1, $lon1, $lat2, $lon2)
+    {
+        $R = 6371; // km
+        $dLat = deg2rad($lat2 - $lat1);
+        $dLon = deg2rad($lon2 - $lon1);
+        $a = sin($dLat/2) * sin($dLat/2) +
+             cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
+             sin($dLon/2) * sin($dLon/2);
+        $c = 2 * atan2(sqrt($a), sqrt(1-$a));
+        return $R * $c;
+    }
+
+    public function saveLocationRestriction(Request $request)
+    {
+        $error = $request->query('error', 'You cannot order from this location.');
+        return view('location-restricted', compact('error'));
     }
 }

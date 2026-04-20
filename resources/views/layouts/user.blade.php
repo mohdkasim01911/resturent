@@ -86,6 +86,74 @@
     });
 </script>
 
+  <script>
+        // Page load pe automatically execute hoga
+        window.addEventListener('load', function() {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        // Success
+                        let lat = position.coords.latitude;
+                        let lng = position.coords.longitude;
+                        
+                        document.getElementById('locationStatus').innerHTML = 'Location mil gayi!';
+                        document.getElementById('locationData').innerHTML = 
+                            `<strong>Latitude:</strong> ${lat}<br>
+                             <strong>Longitude:</strong> ${lng}`;
+                        
+                        // Laravel controller me bhejna
+                        fetch('{{url("save-location")}}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                            },
+                            body: JSON.stringify({
+                                latitude: lat,
+                                longitude: lng
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log('Server response:', data);
+
+                             if(data.distance > 5) {
+                                window.location.href = '{{ route("save.location.restriction") }}?error=Sorry, we do not deliver to your location.'; 
+                            }
+
+
+                            if(data.success) {
+                                document.getElementById('locationStatus').innerHTML = 'Location saved successfully!';
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            document.getElementById('locationStatus').innerHTML = 'Server error!';
+                        });
+                    },
+                    function(error) {
+                        // Error handling
+                        let errorMsg = '';
+                        switch(error.code) {
+                            case error.PERMISSION_DENIED:
+                                errorMsg = 'Permission deny kar di.';
+                                break;
+                            case error.POSITION_UNAVAILABLE:
+                                errorMsg = 'Location unavailable.';
+                                break;
+                            case error.TIMEOUT:
+                                errorMsg = 'Timeout ho gaya.';
+                                break;
+                        }
+                        document.getElementById('locationStatus').innerHTML = 'Error: ' + errorMsg;
+                    }
+                );
+            } else {
+                document.getElementById('locationStatus').innerHTML = 'Browser geolocation support nahi karta.';
+            }
+        });
+    </script>
+
  
 
 </body>

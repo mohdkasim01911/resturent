@@ -110,6 +110,9 @@ Route::prefix('/')->name('user.')->group(function () {
     });
 });
 
+ Route::post('/save-location', [HomeController::class, 'saveLocation'])->name('save.location');
+ Route::get('/save-location-restriction', [HomeController::class, 'saveLocationRestriction'])->name('save.location.restriction');
+
 Route::get('/cart/count', function() {
     return response()->json(['count' => count(session('cart', []))]);
 })->name('cart.count');
