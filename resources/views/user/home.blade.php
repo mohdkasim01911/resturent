@@ -136,10 +136,13 @@
                 <div class="text-sm text-gray-500 mb-2">
                     Starting from ₹{{ number_format($minPrice, 2) }}
                 </div>
+               <div class="flex justify-between items-center">
+                 <span class="text-2xl font-bold text-orange-600">₹{{ number_format($minPrice, 2) }}</span>
                 <button onclick='openVariantModal({{ $food->id }}, "{{ $food->name }}", {{ $variantsArray }})' 
-                        class="w-full bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition">
+                        class="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition">
                     Add to Cart
                 </button>
+               </div>
             </div>
         @else
             <div class="mt-4 flex justify-between items-center">

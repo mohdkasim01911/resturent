@@ -154,6 +154,30 @@
         });
     </script>
 
+
+<script>
+function carousel() {
+    return {
+        currentSlide: 0,
+        slides: [
+            { title: 'Delicious Food Delivered to Your Doorstep', subtitle: 'Order from the best restaurants in town', btnText: 'Order Now' },
+            { title: 'Fast & Fresh Delivery', subtitle: 'Hot meals delivered in 30 minutes or less', btnText: 'Explore Menu' },
+            { title: 'Special Discounts Every Day', subtitle: 'Get up to 50% off on your first order', btnText: 'Claim Offer' }
+        ],
+        init() {
+            setInterval(() => {
+                this.nextSlide();
+            }, 5000);
+        },
+        nextSlide() {
+            this.currentSlide = (this.currentSlide + 1) % this.slides.length;
+        },
+        prevSlide() {
+            this.currentSlide = (this.currentSlide - 1 + this.slides.length) % this.slides.length;
+        }
+    }
+}
+</script>
  
 
 </body>
